@@ -51,16 +51,17 @@ function Home() {
             // Dynamic width based on wheather pasteId is present
             className={`${
               pasteId ? "w-[80%]" : "w-[85%]"
-            } text-black border border-gray-100 rounded-md p-2`}
+            } text-black border-[2px] border-gray-200 rounded-md p-2 focus:border-blue-300 outline-0`}
             type="text"
             placeholder="Title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
+            required="Title is Required"
           />
 
           <button
-            onClick={createMyPaste}
-            className="text-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 text-sm rounded-lg dark:hover:bg-blue-700 w-[50%]"
+            onClick={createMyPaste }
+            className="text-blue-500 bg-blue-800 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 text-sm rounded-lg dark:hover:bg-blue-700 w-[50%]"
           >
             {pasteId ? "Update My Paste" : "Create My Paste"}
           </button>
@@ -72,11 +73,12 @@ function Home() {
         </div>
         <div>
           <textarea
-            className="rounded-2xl mt-4 min-w-[500px] p-4 border border-gray-200 "
+            className="rounded-2xl mt-4 min-w-[500px] p-4 text-black border-[2px] border-gray-200 focus:border-blue-300 outline-0 "
             value={value}
             placeholder="Enter Content Here"
             onChange={(e) => setValue(e.target.value)}
             rows={15}
+            required="Content is Required"
           />
         </div>
       </div>
