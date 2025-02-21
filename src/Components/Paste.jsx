@@ -2,8 +2,8 @@ import { Calendar, Copy, Eye, PencilLine, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react"; // Import useState
-import { removeFromPastes } from "../redux/pasteSlice";
 import { FormatDate } from "../date/formatDate";
+import { removeFromPastes } from "../Redux/pasteSlice";
 
 const Paste = () => {
   const pastes = useSelector((state) => state.paste.pastes);
