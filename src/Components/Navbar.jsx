@@ -1,24 +1,24 @@
-import { NavLink } from "react-router-dom"
 
-function Navbar() {
+import { NavbarData } from "../date/NavBar";
+import { NavLink } from "react-router-dom";
+const Navbar = () => {
   return (
-    <div className="w-full h-[45px] flex justify-center items-center p-4 bg-blue-200 gap-10">
-
+    <div className="w-full h-[45px] flex justify-center items-center p-4 bg-gray-200 gap-x-5">
+      {NavbarData.map((link, idx) => (
         <NavLink
-        to="/"
+          key={idx}
+          to={link.path}
+          className={({ isActive }) =>
+            isActive
+              ? "text-blue-500 font-semibold text-xl"
+              : "text-white font-medium text-xl"
+          }
         >
-            Home
+          {link.title}
         </NavLink>
-
-        <NavLink
-        to="/pastes"
-        
-        >
-            Pastes
-        </NavLink>
-      
+      ))}
     </div>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;

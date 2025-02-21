@@ -1,17 +1,19 @@
+import { Copy, PlusCircle } from "lucide-react";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
+import { addToPastes, updatePastes } from "../redux/pasteSlice";
 import { useSearchParams } from "react-router-dom";
-import { addToPastes, updateToPastes } from "../Redux/PasteSlice";
 
-function Home() {
-  const [title, setTitle] = useState("");
+const Home = () => {
   const [value, setValue] = useState("");
-  const [searchParams, setSearchParams] = useSearchParams();
-  const pasteId = searchParams.get("pasteId");
+  const [title, setTitle] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams(); // Destructure useSearchParams
+  const pasteId = searchParams.get("pasteId"); // Get pasteId from the search params
+  const pastes = useSelector((state) => state.paste.pastes);
   const dispatch = useDispatch();
-  const allPastes = useSelector((state) => state.Paste.pastes);
 
-  function createMyPaste() {
+  const createPaste = () => {
     const paste = {
       title: title,
       content: value,
@@ -22,68 +24,118 @@ function Home() {
     };
 
     if (pasteId) {
-      //update
-      dispatch(updateToPastes(paste));
+      // If pasteId is present, update the paste
+      dispatch(updatePastes(paste));
     } else {
-      //create
       dispatch(addToPastes(paste));
     }
-    //after creation or updation
+
     setTitle("");
     setValue("");
-    setSearchParams({}); // Remove all pasteId from URL after create/update a paste
-  }
 
-  
+    // Remove the pasteId from the URL after creating/updating a paste
+    setSearchParams({});
+  };
+
+  const resetPaste = () => {
+    setTitle("");
+    setValue("");
+    setSearchParams({});
+    // navigate("/");
+  };
+
   useEffect(() => {
     if (pasteId) {
-      const paste = allPastes.find((p) => p._id === pasteId);
-      setTitle(paste.title);
-      setValue(paste.content);
+      const paste = pastes.find((p) => p._id === pasteId);
+      if (paste) {
+        setTitle(paste.title);
+        setValue(paste.content);
+      }
     }
-  }, [allPastes, pasteId]);
+  }, [pasteId, pastes]);
+
 
   return (
     <div className="w-full h-full py-10 max-w-[1200px] mx-auto px-5 lg:px-0">
       <div className="flex flex-col gap-y-5 items-start">
         <div className="w-full flex flex-row gap-x-4 justify-between items-center">
           <input
-            // Dynamic width based on wheather pasteId is present
-            className={`${
-              pasteId ? "w-[80%]" : "w-[85%]"
-            } text-black border-[2px] border-gray-200 rounded-md p-2 focus:border-blue-300 outline-0`}
             type="text"
             placeholder="Title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            required="Title is Required"
+            // Dynamic width based on whether pasteId is present
+            className={`${
+              pasteId ? "w-[70%]" : "w-[85%]"
+            } text-black border border-input rounded-md p-2
+            border-gray-300`}
           />
-
           <button
-            onClick={createMyPaste }
-            className="text-blue-500 bg-blue-800 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 text-sm rounded-lg dark:hover:bg-blue-700 w-[50%]"
+            className="text-blue-400 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700
+            
+            "
+            onClick={createPaste}
           >
-            {pasteId ? "Update My Paste" : "Create My Paste"}
+            {pasteId ? "Update Paste" : "Create My Paste"}
           </button>
 
-          {pasteId && <button className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 text-sm rounded-lg dark:hover:bg-blue-700"
+        {pasteId &&  <button
+            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700"
+            onClick={resetPaste}
           >
-            
-          </button> }
+            <PlusCircle size={20} />
+          </button>}
         </div>
-        <div>
+
+        <div
+          className={`w-full flex flex-col items-start relative rounded bg-opacity-10 border border-[rgba(128,121,121,0.3)] backdrop-blur-2xl`}
+        >
+          <div
+            className={`w-full rounded-t flex items-center justify-between gap-x-4 px-4 py-2 border-b border-[rgba(128,121,121,0.3)]`}
+          >
+            <div className="w-full flex gap-x-[6px] items-center select-none group">
+              <div className="w-[13px] h-[13px] rounded-full flex items-center justify-center p-[1px] overflow-hidden bg-[rgb(255,95,87)]" />
+
+              <div
+                className={`w-[13px] h-[13px] rounded-full flex items-center justify-center p-[1px] overflow-hidden bg-[rgb(254,188,46)]`}
+              />
+
+              <div className="w-[13px] h-[13px] rounded-full flex items-center justify-center p-[1px] overflow-hidden bg-[rgb(45,200,66)]" />
+            </div>
+            {/* Circle and copy btn */}
+            <div
+              className={`w-fit rounded-t flex items-center justify-between gap-x-4 px-4`}
+            >
+              {/*Copy  button */}
+              <button
+                className={`flex justify-center items-center  transition-all duration-300 ease-in-out group`}
+                onClick={() => {
+                  navigator.clipboard.writeText(value);
+                  toast.success("Copied to Clipboard", {
+                    position: "top-right",
+                  });
+                }}
+              >
+                <Copy className="group-hover:text-sucess-500" size={20} />
+              </button>
+            </div>
+          </div>
+
+          {/* TextArea */}
           <textarea
-            className="rounded-2xl mt-4 min-w-[500px] p-4 text-black border-[2px] border-gray-200 focus:border-blue-300 outline-0 "
             value={value}
-            placeholder="Enter Content Here"
             onChange={(e) => setValue(e.target.value)}
-            rows={15}
-            required="Content is Required"
+            placeholder="Write Your Content Here...."
+            className="w-full p-3  focus-visible:ring-0"
+            style={{
+              caretColor: "#000",
+            }}
+            rows={20}
           />
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default Home;
