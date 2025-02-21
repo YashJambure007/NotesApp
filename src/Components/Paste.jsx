@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react"; // Import useState
 import { FormatDate } from "../date/formatDate";
-import { removeFromPastes } from "../Redux/pasteSlice";
+import { removeFromPastes } from "../Redux/PasteSlice";
 
 const Paste = () => {
   const pastes = useSelector((state) => state.paste.pastes);
