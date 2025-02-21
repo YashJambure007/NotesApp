@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
-import { addToPastes,updatePastes } from "../Redux/pasteSlice";
+import { addToPastes,updatePastes } from "../Redux/PasteSlice";
 
 const Home = () => {
   const [value, setValue] = useState("");
