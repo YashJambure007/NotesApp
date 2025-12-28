@@ -1,70 +1,116 @@
-import { createSlice } from "@reduxjs/toolkit"
-import { toast } from "react-hot-toast"
+import { createSlice } from "@reduxjs/toolkit";
+import toast from "react-hot-toast";
 
 const initialState = {
   pastes: localStorage.getItem("pastes")
     ? JSON.parse(localStorage.getItem("pastes"))
-    : []
-}
+    : [],
+};
 
 const pasteSlice = createSlice({
   name: "paste",
   initialState,
   reducers: {
     addToPastes: (state, action) => {
-      const paste = action.payload
-      const index = state.pastes.findIndex((item) => item._id === paste._id)
+      const paste = action.payload;
+
+      if (!paste.title || !paste.title.trim()) {
+        toast.error(" Paste title cannot be empty", {
+          style: {
+            background: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
+            color: "white",
+            border: "none",
+            borderRadius: "12px",
+          },
+        });
+        return;
+      }
+
+      const index = state.pastes.findIndex((item) => item._id === paste._id);
 
       if (index >= 0) {
-        // If the course is already in the Pastes, do not modify the quantity
-        toast.error("Paste already exist")
-        return
+        toast.error(" Paste with this ID already exists", {
+          style: {
+            background: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+            color: "white",
+            border: "none",
+            borderRadius: "12px",
+          },
+        });
+        return;
       }
-      // If the course is not in the Pastes, add it to the Pastes
-      state.pastes.push(paste)
-      
-      // Update to localstorage
-      localStorage.setItem("pastes", JSON.stringify(state.pastes))
-      // show toast
-      toast.success("Paste added")
+
+      state.pastes.push(paste);
+      localStorage.setItem("pastes", JSON.stringify(state.pastes));
     },
 
     updatePastes: (state, action) => {
-      const paste = action.payload
-      const index = state.pastes.findIndex((item) => item._id === paste._id)
+      const paste = action.payload;
+
+      if (!paste.title || !paste.title.trim()) {
+        toast.error(" Paste title cannot be empty", {
+          style: {
+            background: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
+            color: "white",
+            border: "none",
+            borderRadius: "12px",
+          },
+        });
+        return;
+      }
+
+      const index = state.pastes.findIndex((item) => item._id === paste._id);
 
       if (index >= 0) {
-        // If the course is found in the Pastes, update it
-        state.pastes[index] = paste
-        // Update to localstorage
-        localStorage.setItem("pastes", JSON.stringify(state.pastes))
-        // show toast
-        toast.success("Paste updated")
+        state.pastes[index] = paste;
+        localStorage.setItem("pastes", JSON.stringify(state.pastes));
+      } else {
+        toast.error(" Paste not found", {
+          style: {
+            background: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
+            color: "white",
+            border: "none",
+            borderRadius: "12px",
+          },
+        });
       }
     },
+
     removeFromPastes: (state, action) => {
-      const pasteId = action.payload
-
-      console.log(pasteId)
-      const index = state.pastes.findIndex((item) => item._id === pasteId)
+      const pasteId = action.payload;
+      const index = state.pastes.findIndex((item) => item._id === pasteId);
 
       if (index >= 0) {
-        // If the course is found in the Pastes, remove it
-        state.pastes.splice(index, 1)
-        // Update to localstorage
-        localStorage.setItem("pastes", JSON.stringify(state.pastes))
-        // show toast
-        toast.success("Paste deleted")
+        state.pastes.splice(index, 1);
+        localStorage.setItem("pastes", JSON.stringify(state.pastes));
+      } else {
+        toast.error(" Paste not found", {
+          style: {
+            background: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
+            color: "white",
+            border: "none",
+            borderRadius: "12px",
+          },
+        });
       }
     },
+
     resetPaste: (state) => {
-      state.pastes = []
-      // Update to localstorage
-      localStorage.removeItem("pastes")
+      state.pastes = [];
+      localStorage.removeItem("pastes");
+      toast.success(" All pastes cleared", {
+        style: {
+          background: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+          color: "white",
+          border: "none",
+          borderRadius: "12px",
+        },
+      });
     },
   },
-})
+});
 
-export const { addToPastes, removeFromPastes, updatePastes } = pasteSlice.actions
+export const { addToPastes, removeFromPastes, updatePastes, resetPaste } =
+  pasteSlice.actions;
 
-export default pasteSlice.reducer
+export default pasteSlice.reducer;
